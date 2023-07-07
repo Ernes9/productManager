@@ -12,13 +12,17 @@ app.get('/productos', async (req, res) => {
     let {limit} = req.query;
     try{
         const productos = await productManager.getProducts()
-        if(limit){
-            res.send(productos.slice(0,parseInt(limit)))
-        } else {
-            res.send(productos)
+        if (productos.length === 0) {
+            res.status(404).json({ error: 'No se encontraron productos' });
+        } else { 
+            if(limit){
+                res.json(productos.slice(0,parseInt(limit)))
+            } else {
+                res.json(productos)
+            }
         }
     } catch(e){
-        res.status(502).send({error: true});    
+        res.status(502).json({error: true});    
     }
 })
 
@@ -26,9 +30,9 @@ app.get('/producto/:id', async (req, res) => {
     try{
         const {id} = req.params;
         const productById = await productManager.getProductById(id)
-        res.send(productById)
+        res.json(productById)
     } catch(e){
-        res.status(502).send({error: true});    
+        res.status(502).json({error: true});    
     }
 })
 
