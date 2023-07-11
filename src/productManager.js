@@ -1,6 +1,7 @@
 import fs from 'fs';
+import { deflate } from 'zlib';
 
-export default class ProductManager{
+class ProductManager{
     constructor(){
         this.path = './db/products.json';
     }
@@ -38,6 +39,7 @@ export default class ProductManager{
                 title,
                 description,
                 price,
+                status: true,
                 thumbnail,
                 code,
                 stock,
@@ -46,7 +48,7 @@ export default class ProductManager{
                 return console.log('The code already exists!');
             } else {
                 products.push(product);
-                this.#saveProduct(products);
+                await this.#saveProduct(products);
                 return product;
             }
         } catch (error) {
@@ -87,11 +89,6 @@ export default class ProductManager{
     }
 };
 
-let productos = new ProductManager()
+const productManager = new ProductManager();
 
-await productos.addProduct('telefono', 'iPhone 11', 1100, 'imagen.png', 'hwASdwa62', 21);
-await productos.addProduct('telefono', 'iPhone 12', 1100, 'imagen.png', 'hwASwaddwa62', 21);
-
-// await productos.updateProduct(1, {"title": 'Telefono'})
-
-
+export default productManager;
