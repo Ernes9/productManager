@@ -25,8 +25,12 @@ productsRouter.get('/', async (req, res) => {
 productsRouter.get('/:id', async (req, res) => {
     try{
         const {id} = req.params;
-        const productById = await productManager.getProductById(id)
-        res.json(productById)
+        try{
+            const productById = await productManager.getProductById(id)
+            res.json(productById)
+        } catch {
+            res.status(404).json({error: true})
+        }
     } catch(e){
         res.status(502).json({error: true});    
     }
@@ -35,7 +39,7 @@ productsRouter.get('/:id', async (req, res) => {
 productsRouter.post("/", async (req, res) => {
     const body = req.body;
     try{
-        const result = productManager.addProduct(body);
+        const result = await productManager.addProduct(body);
         res.json(result);
     } catch(e) {
         console.log(e);
@@ -45,19 +49,24 @@ productsRouter.post("/", async (req, res) => {
 
 productsRouter.delete("/:id", async (req, res) => {
     const {id} = req.query;
-    try {
-        productManager.deleteProduct(id);
-        res.json({deleted: true});
-    } catch(e) {
-        console.log(e);
-        res.status(502).json({error: true});
+    if (await productManager.getProductById(id)) {
+        try {
+            await productManager.deleteProduct(id);
+            res.json({deleted: true});
+        } catch(e) {
+            console.log(e);
+            res.status(502).json({error: true});
+        }
+    }
+    else{
+        res.status(404).json({error:true})
     }
 })
 
 productsRouter.put("/:id", async (req, res) => {
     const body = req.body;
     try {
-        const result = productManager.updateProduct(body);
+        const result = await productManager.updateProduct(body);
         res.json(result);
     } catch(e) {
         console.log(e);

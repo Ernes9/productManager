@@ -1,6 +1,7 @@
 import { triggerAsyncId } from "async_hooks";
 import fs from "fs";
 import productManager from "./productManager.js";
+import { randomUUID } from "crypto";
 
 class CartManager{
     constructor(){
@@ -26,7 +27,7 @@ class CartManager{
     async addCart() {
         try{
             const carts = await this.getCarts();
-            const cart = {id: carts.length + 1, products:[]};
+            const cart = {id: randomUUID, products:[]};
             carts.push(cart);
             await this.#saveCart(carts);
             return cart
@@ -59,7 +60,7 @@ class CartManager{
                 console.log("El producto no existe")
                 return;
             } else {
-                if (carts[foundCartIndex].products) {
+                if (Object.keys(carts[foundCartIndex].products)) {
                     const productIndex = carts[foundCartIndex].products.findIndex((prod) => prod.id == prodId);
                     if (productIndex !== -1) {
                     carts[foundCartIndex].products[productIndex].quantity++;

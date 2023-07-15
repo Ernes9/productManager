@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import fs from 'fs';
 import { deflate } from 'zlib';
 
@@ -31,11 +32,11 @@ class ProductManager{
         };
     };
 
-    async addProduct(title, description, price, thumbnail, code, stock){
+    async addProduct({ title, description, price, thumbnail, code, stock }){
         try {
             const products = await this.getProducts();
             const product = {
-                id: products.length+1,
+                id: randomUUID,
                 title,
                 description,
                 price,
@@ -56,7 +57,7 @@ class ProductManager{
         };
     }
 
-    async updateProduct(id, updatedFields) {
+    async updateProduct({id, updatedFields}) {
         try {
             const products = await this.getProducts();
             const index = products.findIndex((item) => item.id === id);

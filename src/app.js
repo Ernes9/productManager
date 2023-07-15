@@ -1,8 +1,10 @@
 import express from "express";
+import handlebars from "express-handlebars"
 import productsRouter from "./routes/productos.js";
 import cartRouter from "./routes/carts.js"
 
 const app = express();
+
 
 // Nos transforma la informacion que venga de los query params para poder utilizarla como objeto
 app.use(express.urlencoded({extended: true}));
